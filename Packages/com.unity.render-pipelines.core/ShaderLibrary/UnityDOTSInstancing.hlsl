@@ -315,12 +315,29 @@ void SetupDOTSVisibleInstancingData()
 {
     uint packedIndirectVisibleOffset = unity_DOTSVisibleInstances[0].VisibleData.y;
     uint crossFadeValuePacked = unity_DOTSVisibleInstances[0].VisibleData.w & kDOTSInstancingFlagLODCrossFadeValuePacked;
+#if defined(SHADER_API_VULKAN)
+    // [BRG Adreno fix]
+    if (packedIndirectVisibleOffset != 0)
+    {
+        // our indirect draws (enabled bit set; bucket offset rides in startInstance -> unity_InstanceID).
+        // resolve at a PURE unity_InstanceID - do NOT put packed in the address (that is what collapses on Adreno).
+        unity_SampledDOTSIndirectVisibleIndex = unity_InstanceID;
+        unity_SampledDOTSInstanceIndex = LoadDOTSIndirectInstanceIndex(unity_InstanceID);
+    }
+    else
+    {
+        // direct / non-indirect draws (packed == 0): stock cbuffer-array path, untouched.
+        unity_SampledDOTSIndirectVisibleIndex = (packedIndirectVisibleOffset & ~kIndirectVisibleOffsetEnabledBit) + unity_InstanceID;
+        unity_SampledDOTSInstanceIndex = unity_DOTSVisibleInstances[unity_InstanceID].VisibleData.x;
+    }
+#else
     unity_SampledDOTSIndirectVisibleIndex = (packedIndirectVisibleOffset & ~kIndirectVisibleOffsetEnabledBit) + unity_InstanceID;
 
     if (packedIndirectVisibleOffset != 0)
         unity_SampledDOTSInstanceIndex = LoadDOTSIndirectInstanceIndex(unity_SampledDOTSIndirectVisibleIndex);
     else
         unity_SampledDOTSInstanceIndex = unity_DOTSVisibleInstances[unity_InstanceID].VisibleData.x;
+#endif
 
     if(crossFadeValuePacked != 0)
     {

@@ -205,8 +205,9 @@ namespace UnityEngine.Rendering
 
                 // The indirect path does not support topology adjustment; use the direct path when this is required.
                 // Concretely, for quads, only use the indirect path if we allow quads natively (e.g. tessellation shaders).
-                supportsIndirect &= subMesh.topology != MeshTopology.Quads || packedMaterialData.hasTessellation;
-                supportsIndirect &= !isMetal || !packedMaterialData.hasTessellation;
+                //supportsIndirect &= subMesh.topology != MeshTopology.Quads || packedMaterialData.hasTessellation;
+                //supportsIndirect &= !isMetal || !packedMaterialData.hasTessellation;
+                supportsIndirect &= subMesh.topology != MeshTopology.Quads;
 
                 packedMaterialDatas[matIndex] = packedMaterialData;
             }

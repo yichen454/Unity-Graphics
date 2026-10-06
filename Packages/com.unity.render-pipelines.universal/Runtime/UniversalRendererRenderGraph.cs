@@ -1106,8 +1106,18 @@ namespace UnityEngine.Rendering.Universal
                         }
                     }
                     else
+                    {
+                        if (!resourceData.isActiveTargetBackBuffer)
+                        {
+                            SetupRenderGraphCameraProperties(renderGraph, depthTarget);
+                        }
                         m_DepthPrepass.Render(renderGraph, frameData, in depthTarget, batchLayerMask, setGlobalDepth);
-
+                        if (!resourceData.isActiveTargetBackBuffer)
+                        {
+                            SetupRenderGraphCameraProperties(renderGraph, resourceData.activeColorTexture.IsValid() ? resourceData.activeColorTexture : resourceData.activeDepthTexture);
+                        }
+                    }
+                    
                     if (needsOccluderUpdate)
                     {
                         // first pass: make current frame intermediate depth pyramid

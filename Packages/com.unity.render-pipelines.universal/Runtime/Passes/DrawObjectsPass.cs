@@ -305,7 +305,16 @@ namespace UnityEngine.Rendering.Universal.Internal
                 {
                     var depthAccessFlags = (disableZWrite) ? AccessFlags.Read : AccessFlags.ReadWrite;
                     passData.depthHdl = depthTarget;
-                    builder.SetRenderAttachmentDepth(depthTarget, depthAccessFlags);
+                    
+                    if (!passData.isOpaque && DepthInputUtils.IsSupported())
+                    {
+                        builder.SetRenderAttachmentDepth(resourceData.activeDepthTexture, AccessFlags.Read);
+                        builder.SetInputAttachment(resourceData.activeDepthTexture, index: 0, AccessFlags.Read);
+                    }
+                    else
+                    {
+                        builder.SetRenderAttachmentDepth(depthTarget, depthAccessFlags);
+                    }
                 }
 
                 if (mainShadowsTexture.IsValid())

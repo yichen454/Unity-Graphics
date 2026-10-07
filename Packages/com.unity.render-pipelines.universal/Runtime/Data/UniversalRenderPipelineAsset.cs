@@ -48,6 +48,14 @@ namespace UnityEngine.Rendering.Universal
         /// Low quality soft shadows. Recommended for mobile. 4 PCF sample filtering.
         /// </summary>
         Low,
+        /// </summary>
+        /// Medium quality soft shadows. 5 samples poisson filtering.
+        /// </summary>
+        Medium_Poisson5,
+        /// <summary>
+        /// Medium quality soft shadows. 6 samples poisson filtering.
+        /// </summary>
+        Medium_Poisson6,
         /// <summary>
         /// Medium quality soft shadows. The default. 5x5 tent filtering.
         /// </summary>

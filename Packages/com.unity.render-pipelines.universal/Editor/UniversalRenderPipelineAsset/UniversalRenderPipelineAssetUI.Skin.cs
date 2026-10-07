@@ -101,10 +101,12 @@ namespace UnityEditor.Rendering.Universal
             public static GUIContent[] softShadowsQualityAssetOptions =
             {
                 EditorGUIUtility.TrTextContent(nameof(SoftShadowQuality.Low)),
+                EditorGUIUtility.TrTextContent("Medium Poisson Filter (5 samples)"),
+                EditorGUIUtility.TrTextContent("Medium Poisson Filter (6 samples)"),
                 EditorGUIUtility.TrTextContent(nameof(SoftShadowQuality.Medium)),
                 EditorGUIUtility.TrTextContent(nameof(SoftShadowQuality.High))
             };
-            public static int[] softShadowsQualityAssetValues =  { (int)SoftShadowQuality.Low, (int)SoftShadowQuality.Medium, (int)SoftShadowQuality.High };
+            public static int[] softShadowsQualityAssetValues =  { (int)SoftShadowQuality.Low, (int)SoftShadowQuality.Medium_Poisson5, (int)SoftShadowQuality.Medium_Poisson6, (int)SoftShadowQuality.Medium, (int)SoftShadowQuality.High };
 
             // Post-processing
             public static GUIContent colorGradingMode = EditorGUIUtility.TrTextContent("Grading Mode", "Defines how color grading will be applied. Operators will react differently depending on the mode.");

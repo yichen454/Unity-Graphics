@@ -117,23 +117,6 @@ CBUFFER_END
 // w: unused
 float4 _ShadowBias;
 
-static const half3 poisson_disk5[] = {
-    half3(-0.00014484257582653067, 0.0012192407124984035, 0),
-    half3(0.0011108841308236995, 0.0009385648423248624, 0),
-    half3(0.0004800029173152869, -0.00018056960628274015, 0),
-    half3(-0.0010589158648778791, 0.0003128334265417366, 0),
-    half3(-0.0001749486284937418, -0.0012883833794601934, 0)
-};
-
-static const half3 poisson_disk6[] = {
-    half3(-0.001398776778092394, -8.527431513704086e-05, 0),
-    half3(-0.00016106780815556495, 0.0002568869112811221, 0),
-    half3(0.0010944939447127778, -0.0005143942923003966, 0),
-    half3(-0.001100991206352049, 0.0011648049202734063, 0),
-    half3(0.0008507113013948286, 0.0010506337475411092, 0),
-    half3(-0.00047444786415287034, -0.0009899830221478035, 0)
-};
-
 half IsSpotLight()
 {
     return round(_ShadowBias.z) == 0.0 ? 1 : 0;
@@ -154,10 +137,8 @@ half IsPointLight()
 // Should match: UnityEngine.Rendering.Universal + 1
 #define SOFT_SHADOW_QUALITY_OFF    half(0.0)
 #define SOFT_SHADOW_QUALITY_LOW    half(1.0)
-#define SOFT_SHADOW_QUALITY_MEDIUM_5 half(2.0)
-#define SOFT_SHADOW_QUALITY_MEDIUM_6 half(3.0)
-#define SOFT_SHADOW_QUALITY_MEDIUM half(4.0)
-#define SOFT_SHADOW_QUALITY_HIGH   half(5.0)
+#define SOFT_SHADOW_QUALITY_MEDIUM half(2.0)
+#define SOFT_SHADOW_QUALITY_HIGH   half(3.0)
 
 struct ShadowSamplingData
 {
@@ -309,27 +290,6 @@ real SampleShadowmapFiltered(TEXTURE2D_SHADOW_PARAM(ShadowMap, sampler_ShadowMap
     if (samplingData.softShadowQuality == SOFT_SHADOW_QUALITY_LOW)
     {
         attenuation = SampleShadowmapFilteredLowQuality(TEXTURE2D_SHADOW_ARGS(ShadowMap, sampler_ShadowMap), shadowCoord, samplingData);
-    }
-    else if(samplingData.softShadowQuality == SOFT_SHADOW_QUALITY_MEDIUM_5)
-    {
-        attenuation = 0;
-        attenuation += SAMPLE_TEXTURE2D_SHADOW(ShadowMap, sampler_ShadowMap, shadowCoord.xyz + poisson_disk5[0]);
-        attenuation += SAMPLE_TEXTURE2D_SHADOW(ShadowMap, sampler_ShadowMap, shadowCoord.xyz + poisson_disk5[1]);
-        attenuation += SAMPLE_TEXTURE2D_SHADOW(ShadowMap, sampler_ShadowMap, shadowCoord.xyz + poisson_disk5[2]);
-        attenuation += SAMPLE_TEXTURE2D_SHADOW(ShadowMap, sampler_ShadowMap, shadowCoord.xyz + poisson_disk5[3]);
-        attenuation += SAMPLE_TEXTURE2D_SHADOW(ShadowMap, sampler_ShadowMap, shadowCoord.xyz + poisson_disk5[4]);
-        attenuation *= 0.2f;
-    }
-    else if(samplingData.softShadowQuality == SOFT_SHADOW_QUALITY_MEDIUM_6)
-    {
-        attenuation = 0;
-        attenuation += SAMPLE_TEXTURE2D_SHADOW(ShadowMap, sampler_ShadowMap, shadowCoord.xyz + poisson_disk6[0]);
-        attenuation += SAMPLE_TEXTURE2D_SHADOW(ShadowMap, sampler_ShadowMap, shadowCoord.xyz + poisson_disk6[1]);
-        attenuation += SAMPLE_TEXTURE2D_SHADOW(ShadowMap, sampler_ShadowMap, shadowCoord.xyz + poisson_disk6[2]);
-        attenuation += SAMPLE_TEXTURE2D_SHADOW(ShadowMap, sampler_ShadowMap, shadowCoord.xyz + poisson_disk6[3]);
-        attenuation += SAMPLE_TEXTURE2D_SHADOW(ShadowMap, sampler_ShadowMap, shadowCoord.xyz + poisson_disk6[4]);
-        attenuation += SAMPLE_TEXTURE2D_SHADOW(ShadowMap, sampler_ShadowMap, shadowCoord.xyz + poisson_disk6[5]);
-        attenuation *= 0.1666667f;
     }
     else if(samplingData.softShadowQuality == SOFT_SHADOW_QUALITY_MEDIUM)
     {

@@ -193,9 +193,9 @@ Shader "Hidden/Universal Render Pipeline/UberPost"
                 #endif
 
                 #if _BLOOM_HQ
-                half3 bloom = SampleTexture2DBicubic(TEXTURE2D_X_ARGS(_Bloom_Texture, sampler_LinearClamp), SCREEN_COORD_REMOVE_SCALEBIAS(uvBloom), _Bloom_Texture_TexelSize.zwxy, (1.0).xx, unity_StereoEyeIndex).xyz;
+                half4 bloom = SampleTexture2DBicubic(TEXTURE2D_X_ARGS(_Bloom_Texture, sampler_LinearClamp), SCREEN_COORD_REMOVE_SCALEBIAS(uvBloom), _Bloom_Texture_TexelSize.zwxy, (1.0).xx, unity_StereoEyeIndex);
                 #else
-                half3 bloom = SAMPLE_TEXTURE2D_X(_Bloom_Texture, sampler_LinearClamp, SCREEN_COORD_REMOVE_SCALEBIAS(uvBloom)).xyz;
+                half4 bloom = SAMPLE_TEXTURE2D_X(_Bloom_Texture, sampler_LinearClamp, SCREEN_COORD_REMOVE_SCALEBIAS(uvBloom));
                 #endif
 
                 #if UNITY_COLORSPACE_GAMMA
@@ -220,6 +220,7 @@ Shader "Hidden/Universal Render Pipeline/UberPost"
                 #if _ENABLE_ALPHA_OUTPUT
                 // Bloom should also spread in areas with zero alpha, so we save the image with bloom here to do the mixing at the end of the shader
                 inputColor.xyz = color.xyz;
+                inputColor.a = saturate(inputColor.a + bloom.a);
                 #endif
             }
             #endif
